@@ -10,6 +10,19 @@ if [[ -d $testdir ]]; then
     exit 1
 fi
 
+# 後片付け用関数
+function rm_on_exit() {
+    # 後片付け
+    if [[ -n ${cid:-} ]]; then
+        # コンテナ起動していたら止める(権限の関係でとりあえずホームディレクトリ以下全部消しておく)
+        docker exec -it "$cid" /bin/bash -c 'rm -rf /root/*' &>/dev/null || true
+        docker stop "$cid"
+    fi
+    # 作った一時ディレクトリの削除
+    rm -rf "$testdir"
+}
+trap 'rm_on_exit' 0 1 2 3 15
+
 # コンテナのビルド
 env DOCKER_BUILDKIT=1 docker build -t docker_perf_tester "$here"
 
@@ -50,8 +63,3 @@ echo
 echo "test01: $(( ws01_time / 60 )) mins $(( ws01_time % 60)) secs"
 echo "test02: $(( ws02_time / 60 )) mins $(( ws02_time % 60)) secs"
 echo "test03: $(( ws03_time / 60 )) mins $(( ws03_time % 60)) secs"
-
-# 後片付け
-docker exec -it "$cid" /bin/bash -c 'rm -rf /root/*' &>/dev/null || true
-docker stop "$cid"
-rm -rf "$testdir"
