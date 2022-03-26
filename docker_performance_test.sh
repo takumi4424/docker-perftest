@@ -52,5 +52,6 @@ echo "test02: $(( ws02_time / 60 )) mins $(( ws02_time % 60)) secs"
 echo "test03: $(( ws03_time / 60 )) mins $(( ws03_time % 60)) secs"
 
 # 後片付け
+docker exec -it "$cid" /bin/bash -c 'rm -rf /root/*' &>/dev/null || true
 docker stop "$cid"
 rm -rf "$testdir"
