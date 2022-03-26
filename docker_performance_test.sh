@@ -56,8 +56,8 @@ ws03_end="$(date +%s)"
 
 # かかった時間計測
 ws01_time="$(( ws01_end - start ))"
-ws02_time="$(( ws02_end - ws01_time ))"
-ws03_time="$(( ws03_end - ws02_time ))"
+ws02_time="$(( ws02_end - ws01_end ))"
+ws03_time="$(( ws03_end - ws02_end ))"
 
 echo
 echo "test01: $(( ws01_time / 60 )) mins $(( ws01_time % 60)) secs"
